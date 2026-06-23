@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hajeera Begum — SOC Analyst</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ╔══════════════════════════════════════════╗
+   ║  RESET & DESIGN TOKENS                   ║
+   ╚══════════════════════════════════════════╝ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+
+:root{
+  --bg:      #04090e;
+  --s1:      #071320;
+  --s2:      #0b1e30;
+  --s3:      #102840;
+  --s4:      #173550;
+  --border:  #1a3a52;
+  --border2: #244d6a;
+  --t0:      #00ffe5;   /* hot teal */
+  --t1:      #00cfc0;
+  --t2:      #009980;
+  --t3:      rgba(0,255,229,.07);
+  --t4:      rgba(0,255,229,.13);
+  --cy:      #22d3ee;   /* cyan accent */
+  --gold:    #f59e0b;
+  --rose:    #fb7185;
+  --white:   #eef6fb;
+  --txt:     #6ea8c0;
+  --muted:   #2e5f78;
+  --mono:    'Fira Code',monospace;
+  --sans:    'Outfit',sans-serif;
+  --rad:     4px;
+  --ease:    cubic-bezier(.22,1,.36,1);
+}
+
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  SCROLL PROGRESS                         ║
+   ╚══════════════════════════════════════════╝ */
+#prog{
+  position:fixed;top:0;left:0;height:2px;width:0;
+  background:linear-gradient(90deg,var(--t0),var(--cy));
+  z-index:9999;transition:width .06s linear;
+  box-shadow:0 0 12px var(--t0);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  NAV                                     ║
+   ╚══════════════════════════════════════════╝ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  height:60px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 5%;
+  background:rgba(4,9,14,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,255,229,.06);
+  transition:border-color .3s;
+}
+nav.scrolled{border-bottom-color:var(--border)}
+
+.nav-id{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12.5px;color:var(--t0);
+}
+.nav-id-sep{color:var(--muted)}
+.nav-id-role{color:var(--muted);font-size:11px}
+
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{
+  font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--t0)}
+
+.hamburger{
+  display:none;background:none;border:none;
+  flex-direction:column;gap:5px;cursor:pointer;padding:4px;
+}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--t0);transition:.3s}
+
+/* ╔══════════════════════════════════════════╗
+   ║  FULL-SCREEN HERO                        ║
+   ╚══════════════════════════════════════════╝ */
+#hero{
+  height:100vh;min-height:640px;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:0 5%;
+  position:relative;overflow:hidden;
+}
+
+/* ── layered background ── */
+.hero-layer-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--s2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--s2) 1px,transparent 1px);
+  background-size:64px 64px;
+  opacity:.5;
+}
+.hero-layer-radial{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 80% at 100% 50%,rgba(0,255,229,.05) 0%,transparent 60%);
+}
+.hero-layer-vignette{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to right,var(--bg) 0%,transparent 40%),
+    linear-gradient(to top,var(--bg) 0%,transparent 30%);
+}
+
+/* ── scan line ── */
+.hero-scan{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--t0) 50%,transparent 100%);
+  opacity:.12;animation:hscan 7s linear infinite;
+}
+@keyframes hscan{0%{top:0%}100%{top:100%}}
+
+/* ── big circle ornament ── */
+.hero-circle{
+  position:absolute;right:-5%;top:50%;
+  transform:translateY(-50%);
+  width:min(55vw,700px);aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(0,255,229,.06);
+  pointer-events:none;
+}
+.hero-circle::before{
+  content:'';position:absolute;inset:12%;border-radius:50%;
+  border:1px solid rgba(0,255,229,.05);
+}
+.hero-circle::after{
+  content:'';position:absolute;inset:24%;border-radius:50%;
+  border:1px solid rgba(0,255,229,.04);
+}
+
+/* ── hero content ── */
+.hero-inner{position:relative;z-index:2;max-width:820px}
+
+.hero-pre{
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--t0);margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-pre-line{width:40px;height:1px;background:var(--t0)}
+
+.hero-name{
+  font-family:var(--sans);font-weight:900;
+  font-size:clamp(4rem,11vw,9rem);
+  line-height:.92;letter-spacing:-.04em;
+  color:var(--white);margin-bottom:0;
+  text-transform:uppercase;
+}
+.hero-name .stroke{
+  -webkit-text-stroke:2px var(--t0);
+  color:transparent;
+}
+
+.hero-divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,var(--t0),var(--cy),transparent);
+  margin:24px 0;opacity:.4;
+}
+
+.hero-role-row{
+  display:flex;align-items:center;gap:20px;
+  flex-wrap:wrap;margin-bottom:28px;
+}
+.hero-role{
+  font-family:var(--mono);font-size:13px;
+  letter-spacing:.08em;color:var(--txt);
+}
+.hero-role-sep{color:var(--muted)}
+
+.hero-bio{
+  max-width:580px;font-size:16px;
+  color:var(--txt);line-height:1.85;
+  margin-bottom:40px;font-weight:300;
+}
+
+.cert-row{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:44px}
+.cert-chip{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.07em;padding:5px 14px;
+  border:1px solid var(--t2);color:var(--t0);
+  background:var(--t3);border-radius:var(--rad);
+}
+
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:14px 32px;border-radius:var(--rad);
+  text-decoration:none;border:1.5px solid;
+  display:inline-flex;align-items:center;gap:9px;
+  transition:all .22s var(--ease);cursor:pointer;font-weight:600;
+}
+.btn-primary{
+  background:var(--t0);border-color:var(--t0);
+  color:var(--bg);
+  box-shadow:0 0 24px rgba(0,255,229,.25);
+}
+.btn-primary:hover{
+  background:var(--t1);border-color:var(--t1);
+  box-shadow:0 0 32px rgba(0,255,229,.35);
+}
+.btn-secondary{
+  background:transparent;border-color:var(--border2);
+  color:var(--muted);
+}
+.btn-secondary:hover{border-color:var(--t0);color:var(--t0)}
+
+/* ── hero scroll hint ── */
+.scroll-hint{
+  position:absolute;bottom:36px;left:50%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  z-index:2;animation:bob 2.5s ease-in-out infinite;
+}
+.scroll-hint-arrow{
+  width:1px;height:36px;background:linear-gradient(to bottom,var(--t0),transparent);
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ── stat strip ── */
+.stat-strip{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  border-top:1px solid var(--border);
+  background:rgba(4,9,14,.7);backdrop-filter:blur(10px);
+  display:flex;align-items:stretch;
+}
+.stat-item{
+  flex:1;padding:18px 28px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.stat-item:last-child{border-right:none}
+.stat-num{
+  font-family:var(--mono);font-size:1.8rem;
+  font-weight:600;color:var(--t0);line-height:1;
+  margin-bottom:4px;
+}
+.stat-lbl{
+  font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  SECTIONS                                ║
+   ╚══════════════════════════════════════════╝ */
+section.content{padding:96px 5%;border-top:1px solid var(--border)}
+
+.eyebrow{
+  font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--t0);margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:'//';color:var(--muted);font-size:9px}
+
+h2.sh{
+  font-family:var(--sans);font-weight:800;
+  font-size:clamp(1.8rem,4vw,2.8rem);
+  color:var(--white);letter-spacing:-.03em;
+  margin-bottom:56px;line-height:1.1;
+}
+h2.sh em{font-style:normal;color:var(--t0)}
+
+/* ╔══════════════════════════════════════════╗
+   ║  ABOUT                                   ║
+   ╚══════════════════════════════════════════╝ */
+.about-layout{
+  display:grid;grid-template-columns:1fr 360px;
+  gap:64px;align-items:start;
+}
+.about-body p{
+  font-size:15.5px;color:var(--txt);
+  line-height:1.9;margin-bottom:20px;font-weight:300;
+}
+
+.profile-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);overflow:hidden;
+  position:sticky;top:80px;
+}
+.pc-header{
+  padding:14px 20px;background:var(--s2);
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.pc-dot{width:7px;height:7px;border-radius:50%;background:var(--t0);box-shadow:0 0 8px var(--t0);animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:1}50%{opacity:.4}}
+.pc-rows{padding:4px 0}
+.pc-row{
+  display:flex;padding:13px 20px;gap:14px;
+  border-bottom:1px solid var(--s2);align-items:flex-start;
+}
+.pc-row:last-child{border-bottom:none}
+.pc-k{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);width:76px;flex-shrink:0;padding-top:1px;
+}
+.pc-v{
+  font-family:var(--mono);font-size:12px;
+  color:var(--white);line-height:1.5;
+}
+.pc-v a{color:var(--t0);text-decoration:none}
+.pc-v a:hover{text-decoration:underline}
+.available{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:2px;
+  background:var(--t3);border:1px solid var(--t2);
+  font-size:11px;color:var(--t0);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  EXPERIENCE                              ║
+   ╚══════════════════════════════════════════╝ */
+.exp-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);overflow:hidden;
+}
+.exp-top{
+  padding:22px 32px;background:var(--s2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.exp-title{
+  font-family:var(--sans);font-size:16px;
+  font-weight:700;color:var(--white);
+}
+.exp-period{
+  font-family:var(--mono);font-size:11px;
+  color:var(--t0);letter-spacing:.06em;
+  padding:4px 12px;border:1px solid var(--t2);
+  border-radius:2px;background:var(--t3);
+}
+.exp-body{padding:32px}
+.exp-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+.exp-list li{
+  font-size:14.5px;color:var(--txt);
+  padding-left:22px;position:relative;line-height:1.75;
+}
+.exp-list li::before{
+  content:'';position:absolute;left:0;top:10px;
+  width:8px;height:1px;background:var(--t0);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  EDUCATION                               ║
+   ╚══════════════════════════════════════════╝ */
+.edu-card{
+  max-width:560px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);overflow:hidden;
+  position:relative;
+}
+.edu-accent{
+  position:absolute;left:0;top:0;bottom:0;
+  width:3px;
+  background:linear-gradient(to bottom,var(--t0),var(--cy));
+}
+.edu-inner{padding:32px 32px 32px 36px}
+.edu-badge{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--t0);margin-bottom:14px;
+}
+.edu-deg{
+  font-family:var(--sans);font-size:18px;
+  font-weight:700;color:var(--white);
+  margin-bottom:8px;line-height:1.3;
+}
+.edu-uni{
+  font-family:var(--mono);font-size:12px;
+  color:var(--cy);margin-bottom:4px;
+}
+.edu-yr{
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted);letter-spacing:.06em;
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  PROJECTS                                ║
+   ╚══════════════════════════════════════════╝ */
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+.proj-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform .25s var(--ease),border-color .25s,box-shadow .25s;
+}
+.proj-card:hover{
+  transform:translateY(-6px);
+  border-color:var(--border2);
+  box-shadow:0 12px 40px rgba(0,255,229,.07);
+}
+.proj-header{
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--border);
+  background:var(--s2);
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:12px;
+}
+.proj-num{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);
+}
+.proj-type-chip{
+  font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.06em;padding:3px 9px;
+  border-radius:2px;background:var(--t3);
+  border:1px solid var(--t2);color:var(--t0);
+  white-space:nowrap;flex-shrink:0;
+}
+.proj-body{padding:22px 24px;flex:1;display:flex;flex-direction:column}
+.proj-name{
+  font-family:var(--sans);font-size:15px;
+  font-weight:700;color:var(--white);
+  margin-bottom:12px;line-height:1.35;
+}
+.proj-desc{
+  font-size:13.5px;color:var(--txt);
+  line-height:1.7;margin-bottom:20px;flex:1;
+}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.ptag{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.04em;padding:3px 9px;
+  border-radius:2px;
+  background:var(--s2);border:1px solid var(--border);
+  color:var(--txt);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  SKILLS                                  ║
+   ╚══════════════════════════════════════════╝ */
+.sk-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:16px}
+
+.sg{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);overflow:hidden;
+}
+.sg-head{
+  padding:12px 20px;background:var(--s2);
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:6px;
+}
+.sg-head::before{content:'▶';font-size:7px;color:var(--muted)}
+.sg-body{padding:16px 20px}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{
+  font-family:var(--mono);font-size:11px;
+  padding:4px 11px;border-radius:2px;
+  background:var(--s2);border:1px solid var(--border);
+  color:var(--txt);transition:border-color .18s,color .18s;
+}
+.pill:hover{border-color:var(--t2);color:var(--white)}
+
+/* soft skills */
+.soft-header{
+  margin-top:44px;
+  font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--t0);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.soft-header::before{content:'//';color:var(--muted);font-size:9px}
+.soft-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:9px;
+}
+.soft-item{
+  font-family:var(--mono);font-size:11.5px;
+  color:var(--muted);padding:10px 14px;
+  border:1px solid var(--border);border-radius:var(--rad);
+  background:var(--s1);
+  transition:border-color .18s,color .18s,background .18s;
+  display:flex;align-items:center;gap:8px;
+}
+.soft-item::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--t2);flex-shrink:0;
+}
+.soft-item:hover{border-color:var(--t0);color:var(--white);background:var(--s2)}
+
+/* ╔══════════════════════════════════════════╗
+   ║  ACHIEVEMENTS / CERTS                    ║
+   ╚══════════════════════════════════════════╝ */
+.cert-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;max-width:900px;
+}
+.cert-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);padding:26px 28px;
+  display:flex;align-items:center;gap:20px;
+  transition:border-color .2s,transform .2s;
+}
+.cert-card:hover{border-color:var(--border2);transform:translateX(4px)}
+.cert-icon{
+  width:52px;height:52px;border-radius:var(--rad);
+  background:var(--t3);border:1px solid var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.cert-name{
+  font-family:var(--sans);font-size:14px;
+  font-weight:700;color:var(--white);margin-bottom:4px;
+}
+.cert-issuer{
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted);
+}
+
+/* ╔══════════════════════════════════════════╗
+   ║  CONTACT                                 ║
+   ╚══════════════════════════════════════════╝ */
+.contact-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:72px;max-width:960px;
+}
+.contact-lead{
+  font-size:16px;color:var(--txt);
+  line-height:1.85;margin-bottom:36px;font-weight:300;
+}
+.clink{
+  display:flex;align-items:center;gap:16px;
+  font-family:var(--mono);font-size:12.5px;
+  color:var(--txt);text-decoration:none;
+  margin-bottom:18px;
+  transition:color .18s;
+}
+.clink:hover{color:var(--t0)}
+.clink-icon{
+  width:40px;height:40px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:border-color .18s;
+}
+.clink:hover .clink-icon{border-color:var(--t2)}
+
+.form{display:flex;flex-direction:column;gap:15px}
+.fl{display:flex;flex-direction:column;gap:5px}
+.fl label{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);
+}
+.fl input,.fl textarea{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--rad);padding:12px 15px;
+  color:var(--white);font-family:var(--mono);
+  font-size:12.5px;outline:none;resize:vertical;
+  transition:border-color .18s,box-shadow .18s;
+}
+.fl input::placeholder,.fl textarea::placeholder{color:var(--muted)}
+.fl input:focus,.fl textarea:focus{
+  border-color:var(--t0);
+  box-shadow:0 0 0 3px rgba(0,255,229,.07);
+}
+.fl textarea{min-height:106px}
+#fmsg{font-family:var(--mono);font-size:11px;color:var(--t0);display:none}
+
+/* ╔══════════════════════════════════════════╗
+   ║  FOOTER                                  ║
+   ╚══════════════════════════════════════════╝ */
+footer{
+  padding:28px 5%;
+  background:var(--s1);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:12px;
+}
+.foot{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.foot b{color:var(--t0);font-weight:400}
+
+/* ╔══════════════════════════════════════════╗
+   ║  REVEAL                                  ║
+   ╚══════════════════════════════════════════╝ */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}
+
+/* ╔══════════════════════════════════════════╗
+   ║  RESPONSIVE                              ║
+   ╚══════════════════════════════════════════╝ */
+@media(max-width:900px){
+  .about-layout,.contact-layout{grid-template-columns:1fr}
+  .profile-card{position:static}
+  .stat-strip{display:none}
+  #hero{height:auto;padding:120px 5% 80px}
+  .scroll-hint{display:none}
+}
+@media(max-width:640px){
+  section.content{padding:68px 5%}
+  .nav-links{
+    display:none;flex-direction:column;
+    position:fixed;top:60px;left:0;right:0;
+    background:rgba(4,9,14,.97);
+    border-bottom:1px solid var(--border);
+    padding:24px 5%;gap:22px;
+  }
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  .hero-name{font-size:clamp(3rem,16vw,5.5rem)}
+  .exp-top{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="navbar">
+  <div class="nav-id">
+    hajeera<span class="nav-id-sep">@</span>soc
+    <span class="nav-id-sep">·</span>
+    <span class="nav-id-role">SOC Analyst</span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#achievements">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="ham" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══════════ FULL-SCREEN HERO ══════════ -->
+<section id="hero">
+  <div class="hero-layer-grid"></div>
+  <div class="hero-layer-radial"></div>
+  <div class="hero-layer-vignette"></div>
+  <div class="hero-scan"></div>
+  <div class="hero-circle"></div>
+
+  <div class="hero-inner">
+    <div class="hero-pre">
+      <div class="hero-pre-line"></div>
+      Cybersecurity Analyst · Bengaluru, India
+    </div>
+
+    <h1 class="hero-name">
+      Hajeera<br>
+      <span class="stroke" id="typedStroke">Begum</span>
+    </h1>
+
+    <div class="hero-divider"></div>
+
+    <div class="hero-role-row">
+      <span class="hero-role">Threat Detection</span>
+      <span class="hero-role-sep">/</span>
+      <span class="hero-role">Incident Response</span>
+      <span class="hero-role-sep">/</span>
+      <span class="hero-role">SIEM Operations</span>
+      <span class="hero-role-sep">/</span>
+      <span class="hero-role">Threat Hunting</span>
+    </div>
+
+    <p class="hero-bio">
+      Results-driven cybersecurity graduate with hands-on SOC experience — real-time
+      incident detection, proactive threat hunting, digital forensics, and SIEM deployment.
+      CEH & CSA certified. Ready to defend from day one.
+    </p>
+
+    <div class="cert-row">
+      <span class="cert-chip">CEH · EC-Council</span>
+      <span class="cert-chip">CSA · EC-Council</span>
+      <span class="cert-chip">Cisco Cybersecurity Essentials</span>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary">&#8250; Get In Touch</a>
+      <a href="#projects" class="btn btn-secondary">View Projects</a>
+    </div>
+  </div>
+
+  <!-- stat strip pinned to hero bottom -->
+  <div class="stat-strip">
+    <div class="stat-item">
+      <div class="stat-num">15<span style="font-size:1rem;color:var(--t1)">+</span></div>
+      <div class="stat-lbl">Security Tools</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-lbl">Certifications</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3<span style="font-size:1rem;color:var(--t1)">+</span></div>
+      <div class="stat-lbl">Projects</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-lbl">OS Environments</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="font-size:1rem;color:var(--t0);letter-spacing:.06em">OPEN</div>
+      <div class="stat-lbl">To Opportunities</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-arrow"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section class="content" id="about">
+  <div class="eyebrow">01 · About Me</div>
+  <h2 class="sh">Who <em>I Am</em></h2>
+  <div class="about-layout">
+    <div class="about-body rv">
+      <p>
+        I'm a Cybersecurity graduate from Visvesvaraya Technological University with a deep specialisation
+        in Blue Team operations. My work covers the full SOC lifecycle — from alert triage and SIEM
+        configuration to proactive threat hunting and hands-on forensic investigation.
+      </p>
+      <p>
+        I understand attacker behaviour at the TTPs level. Using MITRE ATT&CK to drive detection logic,
+        I've simulated full C2 attack chains, hunted fileless malware artifacts in Windows Registry, and
+        cracked hashes as part of digital forensic investigations — always asking whether the defensive
+        stack would catch what I just did.
+      </p>
+      <p>
+        Seeking an entry-level SOC Analyst role to contribute to threat detection, incident investigation,
+        and security monitoring in a dynamic environment from day one.
+      </p>
+    </div>
+    <div class="rv d1">
+      <div class="profile-card">
+        <div class="pc-header">
+          <div class="pc-dot"></div>
+          analyst.profile
+        </div>
+        <div class="pc-rows">
+          <div class="pc-row">
+            <div class="pc-k">location</div>
+            <div class="pc-v">Bengaluru, KA<br>India</div>
+          </div>
+          <div class="pc-row">
+            <div class="pc-k">email</div>
+            <div class="pc-v"><a href="mailto:hajeera430@gmail.com">hajeera430<br>@gmail.com</a></div>
+          </div>
+          <div class="pc-row">
+            <div class="pc-k">phone</div>
+            <div class="pc-v">+91-7411926849</div>
+          </div>
+          <div class="pc-row">
+            <div class="pc-k">focus</div>
+            <div class="pc-v">SOC · SIEM<br>Threat Hunting</div>
+          </div>
+          <div class="pc-row">
+            <div class="pc-k">status</div>
+            <div class="pc-v"><span class="available">&#9679; Open to Roles</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EXPERIENCE ══════════ -->
+<section class="content" id="experience">
+  <div class="eyebrow">02 · Experience</div>
+  <h2 class="sh">What I've <em>Done</em></h2>
+  <div class="exp-card rv">
+    <div class="exp-top">
+      <div class="exp-title">SOC Operations &amp; Security Analysis</div>
+      <div class="exp-period">2022 – 2025 · Bengaluru</div>
+    </div>
+    <div class="exp-body">
+      <ul class="exp-list">
+        <li>Performed continuous SOC monitoring and real-time incident detection using SIEM dashboards; investigated and documented security alerts following standard incident response procedures.</li>
+        <li>Conducted proactive threat hunting sessions, analysed attack patterns (TTPs), and correlated IOCs across log sources to identify potential security breaches.</li>
+        <li>Executed network infrastructure audits using Wireshark and TFTP analysis; recovered credentials and performed forensic investigations with John the Ripper.</li>
+        <li>Carried out wireless security assessments using Aircrack-ng; evaluated WPA2 and WEP configurations and documented findings with remediation recommendations.</li>
+        <li>Performed malware analysis including LOLBin detection, PowerShell-based attack investigation, and Windows Registry forensics to identify fileless malware artifacts.</li>
+        <li>Conducted credential analysis through hash cracking (Hashcat / JtR), Linux unshadowing, and SCP-based evidence transfer for digital forensic investigations.</li>
+        <li>Performed vulnerability assessments using Nmap, NSE scripting, and Nessus; analysed Windows Event Logs and investigated Event ID 4624 for unauthorised access indicators.</li>
+        <li>Assessed application security on Apache Tomcat environments, identified RCE vulnerabilities via WAR deployments, and documented IoCs.</li>
+        <li>Deployed and managed Wazuh SIEM with Sysmon EDR integration; performed host containment and supported end-to-end incident investigation workflows.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EDUCATION ══════════ -->
+<section class="content" id="education">
+  <div class="eyebrow">03 · Education</div>
+  <h2 class="sh">Academic <em>Background</em></h2>
+  <div class="edu-card rv">
+    <div class="edu-accent"></div>
+    <div class="edu-inner">
+      <div class="edu-badge">Bachelor of Engineering</div>
+      <div class="edu-deg">Computer Science &amp; Engineering</div>
+      <div class="edu-uni">Visvesvaraya Technological University</div>
+      <div class="edu-yr">2022 – 2025 · Bengaluru, Karnataka, India</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROJECTS ══════════ -->
+<section class="content" id="projects">
+  <div class="eyebrow">04 · Projects</div>
+  <h2 class="sh">Built &amp; <em>Explored</em></h2>
+  <div class="proj-grid">
+
+    <div class="proj-card rv">
+      <div class="proj-header">
+        <div class="proj-num">Project_01</div>
+        <div class="proj-type-chip">Final Year · 2024–25</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">Smart Food Monitoring System — IoT &amp; Machine Learning</div>
+        <div class="proj-desc">
+          Designed an IoT-based food safety system integrating environmental sensors (temperature, humidity, gas)
+          with a machine learning classifier. Built a real-time analytics pipeline for contamination detection with
+          early-warning alerts, deployed on embedded hardware.
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">IoT</span><span class="ptag">Python</span>
+          <span class="ptag">Machine Learning</span><span class="ptag">Embedded Systems</span>
+          <span class="ptag">Data Engineering</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card rv d1">
+      <div class="proj-header">
+        <div class="proj-num">Project_02</div>
+        <div class="proj-type-chip">Security Research</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">EDR Testing — Atomic Red Team &amp; BlueSpawn</div>
+        <div class="proj-desc">
+          Deployed BlueSpawn EDR on Windows 11 and ran MITRE ATT&amp;CK-aligned adversary simulations. Simulated a
+          full C2 chain via Metasploit/Meterpreter with keylogging and registry persistence, then correlated EDR
+          alerts to identify detection gaps.
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">EDR</span><span class="ptag">BlueSpawn</span>
+          <span class="ptag">Atomic Red Team</span><span class="ptag">Metasploit</span>
+          <span class="ptag">MITRE ATT&amp;CK</span><span class="ptag">PowerShell</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card rv d2">
+      <div class="proj-header">
+        <div class="proj-num">Project_03</div>
+        <div class="proj-type-chip">Security Research</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-name">Application Whitelisting — AppLocker Execution Control</div>
+        <div class="proj-desc">
+          Configured Windows AppLocker policies across all four rule collections to block unauthorised binary
+          execution. Validated controls in admin and standard user contexts; analysed AppLocker event logs for
+          SOC investigation workflows.
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">AppLocker</span><span class="ptag">Windows Security</span>
+          <span class="ptag">SOC Analysis</span><span class="ptag">Event Log Forensics</span>
+          <span class="ptag">Defense Evasion</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ SKILLS ══════════ -->
+<section class="content" id="skills">
+  <div class="eyebrow">05 · Skills</div>
+  <h2 class="sh">Technical <em>Arsenal</em></h2>
+  <div class="sk-wrap">
+    <div class="sg rv">
+      <div class="sg-head">SOC &amp; Security Ops</div>
+      <div class="sg-body">
+        <div class="pills">
+          <span class="pill">SOC Operations</span><span class="pill">SIEM</span>
+          <span class="pill">EDR</span><span class="pill">Incident Response</span>
+          <span class="pill">Threat Hunting</span><span class="pill">Threat Detection</span>
+          <span class="pill">Threat Intelligence</span><span class="pill">Log Analysis</span>
+        </div>
+      </div>
+    </div>
+    <div class="sg rv d1">
+      <div class="sg-head">Security Domains</div>
+      <div class="sg-body">
+        <div class="pills">
+          <span class="pill">Network Security</span><span class="pill">Wireless Security</span>
+          <span class="pill">Digital Forensics</span><span class="pill">Malware Analysis</span>
+          <span class="pill">Fileless Malware</span><span class="pill">LOLBin Detection</span>
+          <span class="pill">Vuln Assessment</span><span class="pill">Web App Security</span>
+        </div>
+      </div>
+    </div>
+    <div class="sg rv d2">
+      <div class="sg-head">Security Tools</div>
+      <div class="sg-body">
+        <div class="pills">
+          <span class="pill">Wazuh</span><span class="pill">Sysmon</span>
+          <span class="pill">Splunk</span><span class="pill">Wireshark</span>
+          <span class="pill">Nmap / NSE</span><span class="pill">Nessus</span>
+          <span class="pill">Metasploit</span><span class="pill">Burp Suite</span>
+          <span class="pill">Aircrack-ng</span><span class="pill">Hashcat</span>
+          <span class="pill">John the Ripper</span><span class="pill">Zeek</span>
+          <span class="pill">RITA</span><span class="pill">Docker</span>
+        </div>
+      </div>
+    </div>
+    <div class="sg rv">
+      <div class="sg-head">Scripting &amp; Networking</div>
+      <div class="sg-body">
+        <div class="pills">
+          <span class="pill">Python</span><span class="pill">Bash</span>
+          <span class="pill">PowerShell</span><span class="pill">SQL</span>
+          <span class="pill">TCP/IP</span><span class="pill">IDS/IPS</span>
+          <span class="pill">Packet Analysis</span><span class="pill">OS Fingerprinting</span>
+        </div>
+      </div>
+    </div>
+    <div class="sg rv d1">
+      <div class="sg-head">Operating Systems</div>
+      <div class="sg-body">
+        <div class="pills">
+          <span class="pill">Windows</span><span class="pill">Linux</span>
+          <span class="pill">Ubuntu</span><span class="pill">Kali Linux</span>
+          <span class="pill">Parrot OS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="soft-header rv">Soft Skills</div>
+  <div class="soft-grid rv d1">
+    <div class="soft-item">Threat Analysis</div>
+    <div class="soft-item">Incident Handling</div>
+    <div class="soft-item">Security Awareness</div>
+    <div class="soft-item">Risk Assessment</div>
+    <div class="soft-item">Situational Awareness</div>
+    <div class="soft-item">Root Cause Analysis</div>
+    <div class="soft-item">Troubleshooting</div>
+    <div class="soft-item">Stakeholder Communication</div>
+    <div class="soft-item">Security Reporting</div>
+  </div>
+</section>
+
+<!-- ══════════ ACHIEVEMENTS ══════════ -->
+<section class="content" id="achievements">
+  <div class="eyebrow">06 · Achievements</div>
+  <h2 class="sh">Certifications &amp; <em>Credentials</em></h2>
+  <div class="cert-grid">
+    <div class="cert-card rv">
+      <div class="cert-icon">🛡️</div>
+      <div>
+        <div class="cert-name">Certified Ethical Hacker (CEH)</div>
+        <div class="cert-issuer">EC-Council · Penetration Testing Methodologies</div>
+      </div>
+    </div>
+    <div class="cert-card rv d1">
+      <div class="cert-icon">🔍</div>
+      <div>
+        <div class="cert-name">Certified SOC Analyst (CSA)</div>
+        <div class="cert-issuer">EC-Council · SIEM Monitoring &amp; Incident Handling</div>
+      </div>
+    </div>
+    <div class="cert-card rv d2">
+      <div class="cert-icon">🌐</div>
+      <div>
+        <div class="cert-name">Cybersecurity Essentials</div>
+        <div class="cert-issuer">Cisco Networking Academy · Threat Landscape</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="content" id="contact">
+  <div class="eyebrow">07 · Contact</div>
+  <h2 class="sh">Let's <em>Connect</em></h2>
+  <div class="contact-layout">
+    <div class="rv">
+      <p class="contact-lead">
+        I'm actively looking for entry-level SOC Analyst opportunities. If you're building a security
+        operations team or have a role in threat detection, SIEM, or incident response — I'd love
+        to hear from you.
+      </p>
+      <a class="clink" href="mailto:hajeera430@gmail.com">
+        <div class="clink-icon">✉</div>hajeera430@gmail.com
+      </a>
+      <a class="clink" href="tel:+917411926849">
+        <div class="clink-icon">☎</div>+91-7411926849
+      </a>
+      <div class="clink">
+        <div class="clink-icon">⌖</div>Bengaluru, Karnataka, India
+      </div>
+    </div>
+    <div class="form rv d1">
+      <div class="fl">
+        <label for="fn">Your Name</label>
+        <input type="text" id="fn" placeholder="Jane Smith"/>
+      </div>
+      <div class="fl">
+        <label for="fe">Email Address</label>
+        <input type="email" id="fe" placeholder="jane@company.com"/>
+      </div>
+      <div class="fl">
+        <label for="fm">Message</label>
+        <textarea id="fm" placeholder="Tell me about the opportunity…"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="doSend()" style="align-self:flex-start;border:none">
+        &#8250; Send Message
+      </button>
+      <div id="fmsg">✓ Opening your email client…</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="foot">© 2025 <b>Hajeera Begum</b>. All rights reserved.</div>
+  <div class="foot">hajeera@soc · Bengaluru · <b>Open to Opportunities</b></div>
+</footer>
+
+<script>
+/* ── Scroll progress ── */
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight);
+  document.getElementById('prog').style.width=(pct*100)+'%';
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+});
+
+/* ── Hamburger ── */
+const ham=document.getElementById('ham');
+const nl=document.getElementById('navLinks');
+ham.addEventListener('click',()=>nl.classList.toggle('open'));
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nl.classList.remove('open')));
+
+/* ── Scroll reveal ── */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ── Hero typed stroke text ── */
+(()=>{
+  const el=document.getElementById('typedStroke');
+  if(!el)return;
+  const full=el.textContent;
+  el.textContent='';
+  let i=0;
+  // small delay so page settles first
+  setTimeout(()=>{
+    const t=setInterval(()=>{
+      el.textContent+=full[i++];
+      if(i>=full.length)clearInterval(t);
+    },85);
+  },400);
+})();
+
+/* ── Contact form ── */
+function doSend(){
+  const n=document.getElementById('fn').value.trim();
+  const e=document.getElementById('fe').value.trim();
+  const m=document.getElementById('fm').value.trim();
+  if(!n||!e||!m){alert('Please fill in all fields.');return;}
+  const s=encodeURIComponent('Portfolio Enquiry from '+n);
+  const b=encodeURIComponent('Name: '+n+'\nEmail: '+e+'\n\n'+m);
+  window.location.href='mailto:hajeera430@gmail.com?subject='+s+'&body='+b;
+  document.getElementById('fmsg').style.display='block';
+}
+</script>
+</body>
+</html>
